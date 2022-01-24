@@ -3,7 +3,7 @@ import random
 import numpy as np
 from collections import deque
 from game import SnakeGameAI, Direcciones, Punto
-from model import Linear_QNet, QTrainer
+from model import Modelo, Entrenar
 from helper import plot
 
 MAX_MEMORY = 100_000
@@ -17,8 +17,8 @@ class Agent:
         self.epsilon = 0 # randomness
         self.gamma = 0.9 # discount rate
         self.memoria = deque(maxlen=MAX_MEMORY) # popleft()
-        self.modelo = Linear_QNet(11, 256, 3)
-        self.entreno = QTrainer(self.modelo, lr=LR, gamma=self.gamma)
+        self.modelo = Modelo(11, 256, 3)
+        self.entreno = Entrenar(self.modelo, lr=LR, gamma=self.gamma)
 
 
     def obtener_estado(self, game):
@@ -156,7 +156,7 @@ def train():
 
             if puntaje > record:
                 record = puntaje
-                agente.modelo.save()
+                agente.modelo.guardar()
 
             print('Juego', agente.n_juegos, 'puntaje', puntaje, 'Record:', record)
 
