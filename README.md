@@ -6,7 +6,7 @@ Integrantes:
 @RamonCz @marcoantonio1999
 
 
-Implemetacion del juego snake
+Implemetacion del juego snake, con una red neuronal.
 
 
 
