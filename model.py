@@ -77,22 +77,21 @@ class Entrenar:
             recompensa = torch.unsqueeze(recompensa, 0)
             done = (done, )
 
-        # 1: predicted Q values with current estado
+        # 1: prediccion de los Q valores en el estado actual
         pred = self.modelo(estado)
-
+        # Q-learning
         target = pred.clone()
-        for idx in range(len(done)):
-            Q_new = recompensa[idx]
-            if not done[idx]:
+        for idx in range(len(done)): #veces que hemos jugado en esa vida #hay dos casos cuando nos movemos un cuadro o cuando morimos   
+            Q_new = recompensa[idx] #tomamos la recomepesa en ese mov
+            if not done[idx]: #si no hemos perdido
                 Q_new = recompensa[idx] + self.gamma * torch.max(self.modelo(sig_estado[idx]))
 
             target[idx][torch.argmax(accion[idx]).item()] = Q_new
-    
-        # 2: Q_new = r + y * max(next_predicted Q value) -> only do this if not done
-        # pred.clone()
-        # preds[argmax(accion)] = Q_new
-        self.optimizer.zero_grad()
-        loss = self.criterion(target, pred)
+        
+        #target guarda todos los estados  
+      
+        self.optimizer.zero_grad() #iniciamos el 
+        loss = self.criterion(target, pred) # calculamos la perdida
         loss.backward()
 
         self.optimizer.step()

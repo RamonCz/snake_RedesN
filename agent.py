@@ -14,8 +14,8 @@ class Agent:
 
     def __init__(self):
         self.n_juegos = 0
-        self.epsilon = 0 # randomness
-        self.gamma = 0.9 # discount rate
+        self.epsilon = 0 # ruido
+        self.gamma = 0.9 # descuento de recopensa
         self.memoria = deque(maxlen=MAX_MEMORY) # popleft()
         self.modelo = Modelo(11, 256, 3)
         self.entreno = Entrenar(self.modelo, lr=LR, gamma=self.gamma)
@@ -89,7 +89,7 @@ class Agent:
 
     def entrenamiento_largo(self):
         '''
-        Entrena nuestro modelo con todas los recuerdos guardades en la cola       
+        Entrena nuestro modelo con todos los recuerdos guardados en la cola o cuando perdemos
         '''
         if len(self.memoria) > BATCH_SIZE: # si excedimos la memoria tomamos una parte random
             mini_muestra = random.sample(self.memoria, BATCH_SIZE) # lista de tuplas
@@ -101,13 +101,15 @@ class Agent:
 
     def entrenamiento_corto(self, estado, accion, recompensa, sig_estado, done):
         '''
-        Entrena nuestro modelo con una sola accion
+        Entrena nuestro modelo con una sola accion 
         '''
         self.entreno.train_step(estado, accion, recompensa, sig_estado, done)
 
     def tomar_accion(self, estado):
-        # random movimiento: tradeoff exploration / exploitation
-        self.epsilon = 80 - self.n_juegos
+        '''
+        Se toma la accion 
+        '''
+        self.epsilon = 80 - self.n_juegos # decidimos si usamos un mov random
         mov_final = [0,0,0]
         if random.randint(0, 200) < self.epsilon:
             mover = random.randint(0, 2)
@@ -142,14 +144,14 @@ def train():
         recompensa, done, puntaje = game.dar_paso(mov_final)
         estado_new = agente.obtener_estado(game)
 
-        # entrenamiento con corta memoria 
+        # entrenamiento cuando se mueve una sola casilla 
         agente.entrenamiento_corto(estado_final, mov_final, recompensa, estado_new, done)
 
-        # recuerdo
+        # guardamos el estado
         agente.recuerdo(estado_final, mov_final, recompensa, estado_new, done)
 
-        if done:
-            # train long memory, plot result
+        if done: # Si termino el juego
+            # entrenar con mucha memoria(todos los estados hasta perdio), plot resultado
             game.reinicio()
             agente.n_juegos += 1
             agente.entrenamiento_largo()
@@ -164,7 +166,7 @@ def train():
             total_score += puntaje
             mean_score = total_score / agente.n_juegos
             plot_mean_scores.append(mean_score)
-            plot(plot_scores, plot_mean_scores)
+            plot(plot_scores, plot_mean_scores) # mostramos en pantalla la grafica con los datos
 
 
 if __name__ == '__main__':

@@ -4,12 +4,15 @@ from IPython import display
 plt.ion()
 
 def plot(scores, mean_scores):
+    '''
+    Ayuda con la grafica al final de cada juego
+    '''
     display.clear_output(wait=True)
     display.display(plt.gcf())
     plt.clf()
-    plt.title('Training...')
-    plt.xlabel('Number of Games')
-    plt.ylabel('Score')
+    plt.title('Entrenando...')
+    plt.xlabel('Numero de juegos')
+    plt.ylabel('Puntaje')
     plt.plot(scores)
     plt.plot(mean_scores)
     plt.ylim(ymin=0)

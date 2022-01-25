@@ -1,2 +1,16 @@
 # snake_RedesN
-implemetacion del juego snake
+
+Integrantes:
+
+
+@RamonCz @marcoantonio1999
+
+
+Implemetacion del juego snake
+
+
+
+Es necesario installar pytorch, pygame, matplotlib, numpy, IPython 
+
+
+Para correr el juego, python3 agent.py
